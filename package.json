@@ -1,0 +1,45 @@
+{
+  "name": "skill-graph",
+  "version": "0.1.0",
+  "description": "Graph-aware second brain MCP server for AI agents. Works with any markdown folder, with Obsidian as optional enhancement.",
+  "type": "module",
+  "bin": {
+    "skill-graph": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "mcp",
+    "skill-graph",
+    "obsidian",
+    "knowledge-base",
+    "ai-agent",
+    "cursor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feelfetch/skill-graph.git"
+  },
+  "homepage": "https://github.com/feelfetch/skill-graph#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "chalk": "^5.6.2",
+    "ora": "^9.3.0",
+    "zod": "^3.25.23"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
