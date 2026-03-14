@@ -8,6 +8,9 @@ A graph-aware second brain MCP server for AI agents. Works with any folder of ma
 # Interactive setup — creates vault, detects Obsidian, prompts for API key
 npx skill-graph init
 
+# Import skills from skills.sh / GitHub
+npx skill-graph add vercel-labs/agent-skills
+
 # Or just run — auto-creates a starter vault if none exists
 npx skill-graph
 ```
@@ -92,6 +95,29 @@ When the agent calls `skill_graph_learn`:
 Three outcome types: `success` (what worked), `failure` (what to avoid), `preference` (user preferences).
 
 At the end of a session, invoke the `skill_graph_reflect` prompt to have the agent review the conversation and capture anything worth preserving.
+
+## Importing Skills
+
+Import skills from the [skills.sh](https://skills.sh) ecosystem or any GitHub repo with `SKILL.md` files:
+
+```bash
+# Import all skills from a GitHub repo
+npx skill-graph add vercel-labs/agent-skills
+
+# Import a specific skill
+npx skill-graph add supabase/agent-skills --skill supabase-postgres-best-practices
+
+# Import from a local path (e.g. already installed via npx skills add)
+npx skill-graph add ~/.agents/skills/vercel-react-best-practices
+
+# Overwrite an existing skill
+npx skill-graph add vercel-labs/agent-skills --force
+```
+
+The `add` command converts skills from the Agent Skills format into skill-graph format:
+- **SKILL.md** becomes a MOC with `description` frontmatter and `[[wikilinks]]` to each rule
+- **Rule files** in `rules/` or `references/` get their `title`, `impact`, and `impactDescription` merged into a single `description` field
+- **Agent Skills.md** is updated with a link to the new cluster
 
 ## How It Works
 
