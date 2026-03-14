@@ -49,7 +49,7 @@ The `OBSIDIAN_API_KEY` is optional — without it, the server works via direct f
 
 ## Tools
 
-The server exposes 7 tools that implement **progressive disclosure** — start broad, go deep only when relevant.
+The server exposes 8 tools that implement **progressive disclosure** — start broad, go deep only when relevant.
 
 ### Read Tools
 
@@ -67,6 +67,31 @@ The server exposes 7 tools that implement **progressive disclosure** — start b
 |---|---|
 | `skill_graph_create` | Create a new note with frontmatter. Warns on dangling wikilinks. |
 | `skill_graph_update` | Update content, append text, or change a note's description. |
+
+### Learning Tools
+
+| Tool | Purpose |
+|---|---|
+| `skill_graph_learn` | Capture a learning. Routes to an existing note if the topic matches, or creates a new note in `learnings/`. |
+
+### Prompts
+
+| Prompt | Purpose |
+|---|---|
+| `skill_graph_reflect` | End-of-session reflection. Asks the agent to review the conversation and call `skill_graph_learn` for anything worth remembering. |
+
+## Learning Loop
+
+Inspired by [Acontext](https://acontext.io), skill-graph can capture learnings from real conversations and store them as skill nodes in the graph.
+
+When the agent calls `skill_graph_learn`:
+1. **Routing** — the graph is searched for existing notes matching the topic (by name, description, and tags). If a strong match is found, the learning is appended to that note under a `## Learnings` section.
+2. **Creation** — if no match, a new note is created in `learnings/` with the learning as content.
+3. **MOC update** — the `learnings/learnings.md` map of content is updated with a link to the new or updated note.
+
+Three outcome types: `success` (what worked), `failure` (what to avoid), `preference` (user preferences).
+
+At the end of a session, invoke the `skill_graph_reflect` prompt to have the agent review the conversation and capture anything worth preserving.
 
 ## How It Works
 
