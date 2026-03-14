@@ -14,6 +14,7 @@ import { skillGraphFollow } from "./tools/follow.js";
 import { skillGraphSearch } from "./tools/search.js";
 import { skillGraphCreate } from "./tools/create.js";
 import { skillGraphUpdate } from "./tools/update.js";
+import { skillGraphLearn } from "./tools/learn.js";
 
 const DEFAULT_VAULT_PATH = join(
   process.env.HOME || process.env.USERPROFILE || "~",
@@ -61,7 +62,7 @@ export async function startServer(): Promise<void> {
 
   const server = new McpServer({
     name: "skill-graph",
-    version: "0.1.0",
+    version: "0.2.0",
   });
 
   server.tool(
@@ -122,6 +123,35 @@ export async function startServer(): Promise<void> {
     },
     async ({ note, content, append, description }) =>
       skillGraphUpdate(graph, io, note, { content, append, description })
+  );
+
+  server.tool(
+    "skill_graph_learn",
+    "Capture a learning from the current conversation. Routes to an existing skill note if the topic matches, or creates a new note in learnings/. Call this when you discover something worth remembering: a technique that worked, a mistake to avoid, or a user preference.",
+    {
+      outcome: z.enum(["success", "failure", "preference"]).describe("What kind of learning: 'success' for what worked, 'failure' for what to avoid, 'preference' for user preferences"),
+      summary: z.string().describe("One-line summary of the learning"),
+      detail: z.string().describe("Full learning: what happened, why it matters, what to do differently"),
+      tags: z.array(z.string()).optional().describe("Topic hints for routing, e.g. ['postgres', 'indexes']"),
+    },
+    async ({ outcome, summary, detail, tags }) =>
+      skillGraphLearn(graph, io, outcome, summary, detail, tags)
+  );
+
+  server.prompt(
+    "skill_graph_reflect",
+    "End-of-session reflection. Invoke this to review the conversation and capture learnings worth preserving.",
+    () => ({
+      messages: [
+        {
+          role: "user" as const,
+          content: {
+            type: "text" as const,
+            text: "Review this conversation. Identify any learnings worth preserving: techniques that worked, mistakes to avoid, or user preferences discovered. For each, call skill_graph_learn with the appropriate outcome, summary, and detail. If nothing is worth capturing, say so.",
+          },
+        },
+      ],
+    })
   );
 
   const transportSpinner = ora({

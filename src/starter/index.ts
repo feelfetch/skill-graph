@@ -18,6 +18,7 @@ This vault is a **skill graph** — a network of interconnected skill files that
 
 - [[meta-skills]] — the methodology behind skill graphs: how to build them, why they work, and when to use them
 - [[agent-infra]] — foundational patterns for how agents discover, traverse, and operate on knowledge structures
+- [[learnings]] — knowledge captured from real conversations: techniques that worked, mistakes to avoid, and user preferences
 `,
 
   "meta/meta-skills.md": `---
@@ -258,5 +259,16 @@ Before implementing, identify what can vary:
 - **Scope** — MVP vs full feature set
 
 Naming these degrees of freedom early prevents accidentally locking into a suboptimal design. Make the high-impact decisions deliberately and leave the low-impact ones flexible.
+`,
+
+  "learnings/learnings.md": `---
+description: Map of content for captured learnings — techniques that worked, mistakes to avoid, and user preferences discovered during real conversations.
+---
+
+# Learnings
+
+This cluster collects knowledge captured from real agent sessions. Each note records what worked, what failed, or what the user prefers — distilled into reusable entries.
+
+New learnings are added automatically via \`skill_graph_learn\`. When a learning matches an existing skill note, it gets appended there instead of creating a duplicate.
 `,
 };

@@ -39,6 +39,7 @@ async function seedStarterGraph(vaultPath: string): Promise<void> {
     await mkdir(join(fullPath, ".."), { recursive: true });
     await writeFile(fullPath, content, "utf-8");
   }
+  await mkdir(join(vaultPath, "learnings"), { recursive: true });
 }
 
 function detectObsidian(): boolean {

@@ -136,6 +136,51 @@ export class GraphCache {
     return results;
   }
 
+  findBestMatch(
+    summary: string,
+    tags?: string[]
+  ): { node: NoteNode; score: number } | null {
+    const words = this.tokenize(summary);
+    const tagSet = new Set((tags ?? []).map((t) => t.toLowerCase()));
+    let best: { node: NoteNode; score: number } | null = null;
+
+    for (const node of this.nodes.values()) {
+      let score = 0;
+
+      const nameWords = this.tokenize(node.name);
+      const descWords = this.tokenize(node.description);
+      const folderWords = this.tokenize(node.folder.replace(/\//g, " "));
+
+      for (const w of words) {
+        if (nameWords.has(w)) score += 3;
+        if (descWords.has(w)) score += 2;
+      }
+
+      for (const tag of tagSet) {
+        if (nameWords.has(tag)) score += 3;
+        if (folderWords.has(tag)) score += 2;
+        if (descWords.has(tag)) score += 1;
+      }
+
+      if (score > 0 && (!best || score > best.score)) {
+        best = { node, score };
+      }
+    }
+
+    // Require a minimum score to consider it a real match
+    if (best && best.score >= 4) return best;
+    return null;
+  }
+
+  private tokenize(text: string): Set<string> {
+    return new Set(
+      text
+        .toLowerCase()
+        .split(/[\s\-_/.,;:!?()\[\]]+/)
+        .filter((w) => w.length > 2)
+    );
+  }
+
   get size(): number {
     return this.nodes.size;
   }
